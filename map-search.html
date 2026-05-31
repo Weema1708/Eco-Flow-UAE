@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlow UAE - Interactive Search App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Afacad+Flux:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Afacad Flux', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #dcfd8b 0%, #bc84ee 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Comfortaa', cursive;
+            color: #1e293b;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .phone-container {
+            width: 360px;
+            height: 740px;
+            background: #1e293b;
+            border: 12px solid #334155;
+            border-radius: 50px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-notch {
+            width: 140px;
+            height: 25px;
+            background: #334155;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 100;
+        }
+
+        .app-header {
+            background: #bc84ee;
+            color: white;
+            padding: 35px 20px 15px 20px;
+            text-align: center;
+        }
+
+        .app-header h2 {
+            font-family: 'Comfortaa', cursive;
+            font-size: 22px;
+        }
+
+        .app-screen {
+            flex-grow: 1;
+            background: #f8fafc;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border-left: 6px solid #ff823a;
+        }
+
+        /* SEARCH INPUT INTERFACE */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #bc84ee;
+        }
+
+        .search-box button {
+            background: #ff823a;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* THE LIVE DYNAMIC MAP */
+        .map-area {
+            width: 100%;
+            height: 230px;
+            background-color: #e2e8f0;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 15px 15px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Fake Roads Grid */
+        .road { position: absolute; background: #94a3b8; }
+        .h-road-1 { top: 30%; left: 0; width: 100%; height: 16px; }
+        .h-road-2 { top: 70%; left: 0; width: 100%; height: 16px; }
+        .v-road-1 { left: 30%; top: 0; width: 16px; height: 100%; }
+        .v-road-2 { left: 70%; top: 0; width: 16px; height: 100%; }
+
+        /* Dynamic Pin Drop */
+        .map-pin {
+            position: absolute;
+            color: #ef4444;
+            font-size: 28px;
+            top: -50px; /* Hidden initially */
+            left: 50%;
+            transform: translate(-50%, -100%);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .map-pin-label {
+            position: absolute;
+            background: #1e293b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+        }
+
+        /* LIVE LIVE RESULTS */
+        .status-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .pill-green { background: #22c55e; }
+        .pill-red { background: #ef4444; }
+
+        .bottom-nav {
+            background: white;
+            height: 70px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #ff823a; /* Keeping it active on map layout */
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>EcoFlow UAE Map Search</h1>
+
+    <div class="phone-container">
+        <div class="phone-notch"></div>
+        
+        <div class="app-header">
+            <h2>EcoFlow UAE</h2>
+            <p>7G3 SMART CITY OPTIMIZER</p>
+        </div>
+
+        <div class="app-screen">
+            
+            <div class="search-box">
+                <input type="text" id="dest-input" placeholder="Type any place name here...">
+                <button onclick="locatePlace()">Go</button>
+            </div>
+
+            <div class="map-area" id="mapBox">
+                <div class="road h-road-1"></div>
+                <div class="road h-road-2"></div>
+                <div class="road v-road-1"></div>
+                <div class="road v-road-2"></div>
+                
+                <div class="map-pin" id="mapPin">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div class="map-pin-label" id="pinLabel">Location</div>
+                </div>
+            </div>
+
+            <div class="app-card" style="border-left-color: #3b82f6;">
+                <h3 style="font-size: 16px; color: #475569;">Destination Target</h3>
+                <p id="display-target" style="font-size: 20px; font-weight: 700; color: #1e293b; margin-top: 2px;">No Destination Selected</p>
+            </div>
+
+            <div class="app-card" style="border-left-color: #bc84ee;">
+                <h3 style="font-size: 16px; color: #475569;"><i class="fa-solid fa-stopwatch"></i> Optimized ETA</h3>
+                <p id="display-time" style="font-size: 26px; font-weight: 700; color: #bc84ee; margin-top: 2px;">-- mins</p>
+                <p id="display-desc" style="font-size: 14px; color: #64748b; margin-top: 4px;">Enter a location to map out the AI Green Wave corridor.</p>
+            </div>
+
+            <div class="app-card" id="flowCard" style="border-left-color: #e2e8f0; display: none;">
+                <h3 style="font-size: 16px; color: #475569;">AI Flow Sensor Status</h3>
+                <div id="flow-pill" class="status-pill pill-green">AI Active</div>
+            </div>
+
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <i class="fa-solid fa-map-location-dot" style="font-size: 22px; margin-bottom: 3px;"></i>
+                <span>Live AI Route Tracker</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function locatePlace() {
+            var inputVal = document.getElementById('dest-input').value.trim();
+            
+            if(inputVal === "") {
+                alert("Please type a location name first!");
+                return;
+            }
+
+            // 1. Update text displays
+            document.getElementById('display-target').innerText = inputVal;
+            document.getElementById('pinLabel').innerText = inputVal;
+
+            // 2. Teleport pin into a random spot on our custom grid map frame
+            var pin = document.getElementById('mapPin');
+            
+            // Random percentages to place inside the map box dimensions safely
+            var randomX = Math.floor(Math.random() * 60) + 20; // between 20% and 80%
+            var randomY = Math.floor(Math.random() * 50) + 30; // between 30% and 80%
+            
+            pin.style.left = randomX + "%";
+            pin.style.top = randomY + "%";
+
+            // 3. Generate automatic smart travel metadata metrics
+            var dynamicMinutes = Math.floor(Math.random() * 25) + 5; // random minutes between 5 and 30
+            document.getElementById('display-time').innerText = dynamicMinutes + " Minutes";
+            document.getElementById('display-desc').innerText = "AI calculated absolute synchronized corridor routing. 0 congestion stops encountered.";
+
+            // 4. Show the environmental sensor stats row card
+            document.getElementById('flowCard').style.display = "block";
+            var flowPill = document.getElementById('flow-pill');
+            
+            // Randomly simulate a green wave or a minor clean flow check
+            if(dynamicMinutes > 18) {
+                flowPill.innerText = "Heavy Weight - AI Route Optimized";
+                flowPill.className = "status-pill pill-red";
+                document.getElementById('flowCard').style.borderLeftColor = "#ef4444";
+            } else {
+                flowPill.innerText = "Light Weight - Green Wave Synchronized";
+                flowPill.className = "status-pill pill-green";
+                document.getElementById('flowCard').style.borderLeftColor = "#22c55e";
+            }
+        }
+    </script>
+</body>
+</html>
