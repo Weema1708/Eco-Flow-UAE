@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Afacad+Flux:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         * {
@@ -172,11 +173,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 250px;
+            height: 250px;
         }
 
-        .qr-code img {
-            width: 200px;
-            height: 200px;
+        .qr-code div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .qr-text {
@@ -255,10 +259,8 @@
 
         <div class="qr-section">
             <h2>Download App</h2>
-            <p style="color: #475569; font-size: 14px;">Scan QR or download the EcoFlow Tracker</p>
-            <div class="qr-code">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://github.com/Weema1708/Eco-Flow-UAE" alt="EcoFlow Tracker QR Code">
-            </div>
+            <p style="color: #475569; font-size: 14px;">Scan QR or visit our project</p>
+            <div class="qr-code" id="qrcode"></div>
             <p class="qr-text">📱 Scan this QR code with your phone to access the EcoFlow Tracker app</p>
             <button class="download-btn" onclick="downloadApp()">
                 <i class="fa-solid fa-download"></i> Get App
@@ -267,6 +269,18 @@
     </div>
 
     <script>
+        // Generate QR Code on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://github.com/Weema1708/Eco-Flow-UAE",
+                width: 200,
+                height: 200,
+                colorDark: "#1e293b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+
         function updateDashboard() {
             const input = document.getElementById('destination').value.trim();
             const mainIcon = document.getElementById('main-icon');
