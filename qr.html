@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlow UAE - QR Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Afacad+Flux:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Afacad Flux', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #dcfd8b 0%, #bc84ee 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .qr-container h1 {
+            font-family: 'Comfortaa', cursive;
+            color: #1e293b;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .qr-container p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #e9d5ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .qr-code div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-label {
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #9b5de5 0%, #bc84ee 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(155, 93, 229, 0.4);
+        }
+
+        .info-text {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 12px;
+            color: #475569;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="qr-container">
+        <h1>📲 EcoFlow UAE</h1>
+        <p style="color: #64748b; font-size: 14px;">Team 7G3 Smart City Optimizer</p>
+        
+        <div class="qr-code" id="qrcode"></div>
+        
+        <p class="qr-label">Scan to Access</p>
+        <p>Point your phone camera at this QR code to visit the EcoFlow UAE project</p>
+        
+        <button class="download-btn" onclick="downloadApp()">
+            <i class="fa-solid fa-arrow-right"></i> Visit GitHub Repository
+        </button>
+
+        <div class="info-text">
+            ✨ Get started with EcoFlow's AI-powered air quality and traffic optimization for smart cities
+        </div>
+    </div>
+
+    <script>
+        // Generate single QR Code on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://github.com/Weema1708/Eco-Flow-UAE",
+                width: 250,
+                height: 250,
+                colorDark: "#1e293b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+
+        function downloadApp() {
+            window.open('https://github.com/Weema1708/Eco-Flow-UAE', '_blank');
+        }
+    </script>
+
+</body>
+</html>
