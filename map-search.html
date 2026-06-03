@@ -37,7 +37,7 @@
 
         .phone-container {
             width: 360px;
-            height: 740px;
+            height: 800px;
             background: #1e293b;
             border: 12px solid #334155;
             border-radius: 50px;
@@ -124,7 +124,7 @@
         /* THE LIVE DYNAMIC MAP */
         .map-area {
             width: 100%;
-            height: 230px;
+            height: 180px;
             background-color: #e2e8f0;
             background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
             background-size: 15px 15px;
@@ -133,6 +133,7 @@
             overflow: hidden;
             border: 2px solid #cbd5e1;
             margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
         /* Fake Roads Grid */
@@ -147,7 +148,7 @@
             position: absolute;
             color: #ef4444;
             font-size: 28px;
-            top: -50px; /* Hidden initially */
+            top: -50px;
             left: 50%;
             transform: translate(-50%, -100%);
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -169,7 +170,7 @@
             font-weight: bold;
         }
 
-        /* LIVE LIVE RESULTS */
+        /* LIVE RESULTS */
         .status-pill {
             display: inline-block;
             padding: 4px 10px;
@@ -182,6 +183,47 @@
 
         .pill-green { background: #22c55e; }
         .pill-red { background: #ef4444; }
+        .pill-orange { background: #ff823a; }
+
+        /* WEATHER & AIR QUALITY CARDS */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-mini-card {
+            background: white;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .info-mini-card .icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .info-mini-card .label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .info-mini-card .value {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .weather-sun { color: #ff823a; }
+        .weather-cloud { color: #94a3b8; }
+        .weather-rain { color: #3b82f6; }
+        .air-clean { color: #22c55e; }
+        .air-polluted { color: #ef4444; }
 
         .bottom-nav {
             background: white;
@@ -197,9 +239,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #ff823a; /* Keeping it active on map layout */
+            color: #ff823a;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 3px;
         }
     </style>
 </head>
@@ -234,6 +281,20 @@
                 </div>
             </div>
 
+            <!-- WEATHER & AIR QUALITY INFO -->
+            <div class="info-grid">
+                <div class="info-mini-card">
+                    <div class="icon weather-sun" id="weatherIcon">☀️</div>
+                    <div class="label">Weather</div>
+                    <div class="value" id="weatherStatus">Sunny</div>
+                </div>
+                <div class="info-mini-card">
+                    <div class="icon air-clean" id="airIcon">🌿</div>
+                    <div class="label">Air Quality</div>
+                    <div class="value" id="airStatus">Clean</div>
+                </div>
+            </div>
+
             <div class="app-card" style="border-left-color: #3b82f6;">
                 <h3 style="font-size: 16px; color: #475569;">Destination Target</h3>
                 <p id="display-target" style="font-size: 20px; font-weight: 700; color: #1e293b; margin-top: 2px;">No Destination Selected</p>
@@ -254,13 +315,37 @@
 
         <div class="bottom-nav">
             <div class="nav-item">
-                <i class="fa-solid fa-map-location-dot" style="font-size: 22px; margin-bottom: 3px;"></i>
+                <i class="fa-solid fa-map-location-dot"></i>
                 <span>Live AI Route Tracker</span>
             </div>
         </div>
     </div>
 
     <script>
+        // Weather conditions
+        const weatherOptions = [
+            { icon: "☀️", name: "Sunny", class: "weather-sun" },
+            { icon: "⛅", name: "Partly Cloudy", class: "weather-cloud" },
+            { icon: "☁️", name: "Cloudy", class: "weather-cloud" },
+            { icon: "🌧️", name: "Rainy", class: "weather-rain" }
+        ];
+
+        // Air quality conditions
+        const airQualityOptions = [
+            { icon: "🌿", name: "Clean", class: "air-clean", level: "Excellent" },
+            { icon: "🍃", name: "Good", class: "air-clean", level: "Good" },
+            { icon: "⚠️", name: "Moderate", class: "pill-orange", level: "Moderate" },
+            { icon: "🚨", name: "Polluted", class: "air-polluted", level: "Poor" }
+        ];
+
+        function getRandomWeather() {
+            return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+        }
+
+        function getRandomAirQuality() {
+            return airQualityOptions[Math.floor(Math.random() * airQualityOptions.length)];
+        }
+
         function locatePlace() {
             var inputVal = document.getElementById('dest-input').value.trim();
             
@@ -275,24 +360,46 @@
 
             // 2. Teleport pin into a random spot on our custom grid map frame
             var pin = document.getElementById('mapPin');
-            
-            // Random percentages to place inside the map box dimensions safely
-            var randomX = Math.floor(Math.random() * 60) + 20; // between 20% and 80%
-            var randomY = Math.floor(Math.random() * 50) + 30; // between 30% and 80%
+            var randomX = Math.floor(Math.random() * 60) + 20;
+            var randomY = Math.floor(Math.random() * 50) + 30;
             
             pin.style.left = randomX + "%";
             pin.style.top = randomY + "%";
 
-            // 3. Generate automatic smart travel metadata metrics
-            var dynamicMinutes = Math.floor(Math.random() * 25) + 5; // random minutes between 5 and 30
-            document.getElementById('display-time').innerText = dynamicMinutes + " Minutes";
-            document.getElementById('display-desc').innerText = "AI calculated absolute synchronized corridor routing. 0 congestion stops encountered.";
+            // 3. Generate weather and air quality data
+            const weather = getRandomWeather();
+            const airQuality = getRandomAirQuality();
 
-            // 4. Show the environmental sensor stats row card
+            document.getElementById('weatherStatus').innerText = weather.name;
+            document.getElementById('weatherIcon').className = `icon ${weather.class}`;
+            document.getElementById('weatherIcon').innerText = weather.icon;
+
+            document.getElementById('airStatus').innerText = airQuality.name;
+            document.getElementById('airIcon').className = `icon ${airQuality.class}`;
+            document.getElementById('airIcon').innerText = airQuality.icon;
+
+            // 4. Generate automatic smart travel metadata
+            var dynamicMinutes = Math.floor(Math.random() * 25) + 5;
+            document.getElementById('display-time').innerText = dynamicMinutes + " Minutes";
+            
+            // Dynamic description based on air quality and weather
+            var desc = "AI calculated corridor routing. ";
+            if (airQuality.name === "Clean" || airQuality.name === "Good") {
+                desc += "Air quality is excellent! ";
+            } else if (airQuality.name === "Moderate") {
+                desc += "Air quality is moderate, slight adjustments recommended. ";
+            } else {
+                desc += "Air quality is poor, optimal route calculated. ";
+            }
+            desc += "0 congestion stops encountered.";
+            
+            document.getElementById('display-desc').innerText = desc;
+
+            // 5. Show the environmental sensor stats row card
             document.getElementById('flowCard').style.display = "block";
             var flowPill = document.getElementById('flow-pill');
             
-            // Randomly simulate a green wave or a minor clean flow check
+            // Randomly simulate flow status
             if(dynamicMinutes > 18) {
                 flowPill.innerText = "Heavy Weight - AI Route Optimized";
                 flowPill.className = "status-pill pill-red";
