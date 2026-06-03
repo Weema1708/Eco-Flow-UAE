@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlow Tracker App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Afacad+Flux:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Afacad Flux', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #dcfd8b 0%, #bc84ee 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Container for both phone and QR */
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Phone Frame Wrapper */
+        .phone-frame {
+            background: #3b3342;
+            border-radius: 45px;
+            border: 12px solid #4a4052;
+            height: 680px;
+            width: 340px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(155, 93, 229, 0.25);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* App Screen Background */
+        .phone-screen {
+            background: #faf8fc;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* App Header */
+        .app-header {
+            background: #d3adf7;
+            color: white;
+            font-family: 'Comfortaa', cursive;
+            font-size: 20px;
+            padding: 30px 15px 15px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* App Body Content */
+        .app-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        /* Search Section */
+        .search-box {
+            display: flex;
+            background: white;
+            border: 2px solid #e9d5ff;
+            border-radius: 15px;
+            padding: 8px 12px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+            color: #334155;
+        }
+
+        .search-box button {
+            background: #9b5de5;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Feature Graphic Cards */
+        .card-graphic {
+            background: #eef2f5;
+            height: 140px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .card-graphic i {
+            font-size: 55px;
+            color: #9b5de5;
+        }
+
+        /* Data Status Labels */
+        .status-bar {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-air { border-left: 6px solid #52c41a; color: #237804; }
+        .status-map { border-left: 6px solid #1890ff; color: #0050b3; }
+        .status-time { border-left: 6px solid #ff9e64; color: #d46b08; }
+
+        /* QR Code Section */
+        .qr-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qr-section h2 {
+            font-family: 'Comfortaa', cursive;
+            color: #1e293b;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #e9d5ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .qr-text {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            max-width: 250px;
+        }
+
+        .download-btn {
+            background: #9b5de5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            background: #8b4dc7;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                gap: 20px;
+            }
+
+            .container {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="app-header" id="app-title">EcoFlow Tracker</div>
+                
+                <div class="app-body">
+                    <div class="search-box">
+                        <i class="fa-solid fa-location-dot" style="color: #9b5de5;"></i>
+                        <input type="text" id="destination" placeholder="Enter school or city..." value="Zayed City School for Girls Cycle 2&3">
+                        <button onclick="updateDashboard()">Go</button>
+                    </div>
+
+                    <div class="card-graphic" id="graphic-box">
+                        <i id="main-icon" class="fa-solid fa-wind"></i>
+                    </div>
+
+                    <div id="air-status" class="status-bar status-air">
+                        <i class="fa-solid fa-leaf"></i> <span id="air-text">95% Fresh Air Quality</span>
+                    </div>
+
+                    <div id="map-status" class="status-bar status-map">
+                        <i class="fa-solid fa-route"></i> <span id="map-text">AI Path: Active & Clear</span>
+                    </div>
+
+                    <div id="time-status" class="status-bar status-time">
+                        <i class="fa-solid fa-hourglass-half"></i> <span id="time-text">Estimated Arrival: 4 Mins</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qr-section">
+            <h2>Download App</h2>
+            <p style="color: #475569; font-size: 14px;">Scan QR or download the EcoFlow Tracker</p>
+            <div class="qr-code">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://github.com/Weema1708/Eco-Flow-UAE" alt="EcoFlow Tracker QR Code">
+            </div>
+            <p class="qr-text">📱 Scan this QR code with your phone to access the EcoFlow Tracker app</p>
+            <button class="download-btn" onclick="downloadApp()">
+                <i class="fa-solid fa-download"></i> Get App
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function updateDashboard() {
+            const input = document.getElementById('destination').value.trim();
+            const mainIcon = document.getElementById('main-icon');
+            const airText = document.getElementById('air-text');
+            const mapText = document.getElementById('map-text');
+            const timeText = document.getElementById('time-text');
+            
+            if (input === "") {
+                alert("Please type a neighborhood or school location!");
+                return;
+            }
+
+            // Simulating real-time updates for different inputs
+            if (input.toLowerCase().includes('zayed city')) {
+                mainIcon.className = "fa-solid fa-wind";
+                airText.innerText = "95% Fresh Air Quality";
+                mapText.innerText = "AI Path: Active & Clear";
+                timeText.innerText = "Estimated Arrival: 4 Mins";
+            } else {
+                // Variations to show how data changes based on live parameters
+                mainIcon.className = "fa-solid fa-smog";
+                airText.innerText = "78% Air Quality (Moderate Traffic)";
+                mapText.innerText = "AI Path: Rerouting around idling cars";
+                timeText.innerText = "Estimated Arrival: 9 Mins";
+            }
+        }
+
+        function downloadApp() {
+            alert("🚀 Redirecting to GitHub repository...\n\nEcoFlow Tracker - Team 7G3 Smart City Optimizer\n\nhttps://github.com/Weema1708/Eco-Flow-UAE");
+            window.open('https://github.com/Weema1708/Eco-Flow-UAE', '_blank');
+        }
+    </script>
+
+</body>
+</html>
