@@ -115,23 +115,23 @@
         
         <div class="qr-code" id="qrcode"></div>
         
-        <p class="qr-label">Scan to Access</p>
-        <p>Point your phone camera at this QR code to visit the EcoFlow UAE project</p>
+        <p class="qr-label">Scan to Access App</p>
+        <p>Point your phone camera at this QR code to use the EcoFlow App</p>
         
-        <button class="download-btn" onclick="downloadApp()">
-            <i class="fa-solid fa-arrow-right"></i> Visit GitHub Repository
+        <button class="download-btn" onclick="accessApp()">
+            <i class="fa-solid fa-arrow-right"></i> Open App Now
         </button>
 
         <div class="info-text">
-            ✨ Get started with EcoFlow's AI-powered air quality and traffic optimization for smart cities
+            ✨ Real-time air quality and AI traffic optimization powered by Team 7G3
         </div>
     </div>
 
     <script>
-        // Generate single QR Code on page load
+        // Generate QR Code pointing to the app
         document.addEventListener('DOMContentLoaded', function() {
             new QRCode(document.getElementById("qrcode"), {
-                text: "https://github.com/Weema1708/Eco-Flow-UAE",
+                text: window.location.origin + "/Eco-Flow-UAE/index.html",
                 width: 250,
                 height: 250,
                 colorDark: "#1e293b",
@@ -140,8 +140,8 @@
             });
         });
 
-        function downloadApp() {
-            window.open('https://github.com/Weema1708/Eco-Flow-UAE', '_blank');
+        function accessApp() {
+            window.location.href = './index.html';
         }
     </script>
 
